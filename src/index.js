@@ -28,7 +28,16 @@ const weatherSearch = document.getElementById("weatherSearch");
 
 const forecastDiv = document.getElementById("forecastDiv");
 const dayDisplay = document.getElementById("dayDisplay");
+const detailsDiv = document.getElementById("detailsDiv");
 const timeText = document.getElementById("timeText");
+
+const humidityText = document.querySelector("#humidity .detailInfo");
+const windText = document.querySelector("#wind .detailInfo");
+const feelText = document.querySelector("#feel .detailInfo");
+const pressureText = document.querySelector("#pressure .detailInfo");
+const bigIcon = document.getElementById("bigIcon");
+const iconDescription = document.getElementById("iconDescription");
+
 
 let weatherArray = null;
 
@@ -41,7 +50,6 @@ weatherSearch.addEventListener("keyup", function(event){
 });
 
 async function searchWeather() {
-
     await getWeatherData(weatherSearch.value);
     console.log(weatherArray);
     if (weatherArray){
@@ -71,32 +79,37 @@ const updateLocation = () => document.getElementById("locationText").textContent
 
 function updateDay(weatherIndex){
     dayDisplay.style.display = "block";
+    detailsDiv.style.display = "grid";
     let offset = weatherArray[0].timezone/3600;
     while (dayDisplay.hasChildNodes()) dayDisplay.removeChild(dayDisplay.lastChild);
     let day;
     if (weatherIndex == 0) day = new Date(Date(weatherArray[0].dt));
     else day = new Date(weatherArray[weatherIndex].dt_txt);
-    day.setHours(day.getUTCHours() + offset);
-    day = day.getDay();
+
+    
     let newTime;
     if (weatherIndex != 0){
         newTime = new Date(weatherArray[weatherIndex].dt_txt);
         newTime.setHours(newTime.getHours() + offset);
+        day.setHours(day.getHours() + offset);
     } else {
         newTime = new Date(Date(weatherArray[0]));
-        newTime.setHours(newTime.getUTCHours() + offset);
+        newTime.setHours(newTime.getUTCHours() + offset -24);
+        day.setHours(day.getUTCHours() + offset);
     }
-    updateDetails(weatherArray.weatherIndex, newTime);
+    day = day.getDay();
+    updateDetails(weatherArray[weatherIndex], newTime);
 
-    let startIndex;
-    for (startIndex = weatherIndex; startIndex > 0; startIndex--){
-        let newDay = new Date(weatherArray[startIndex].dt_txt);
+    let startIndex, newDay;
+    for (startIndex = weatherIndex; startIndex > 1; startIndex--){
+        newDay = new Date(weatherArray[startIndex].dt_txt);
         newDay.setHours(newDay.getHours() + offset);
         if (day != newDay.getDay()){
             startIndex++;
             break;
         }
     }
+
     for (startIndex; startIndex <= 40; startIndex++){
         
         if (startIndex != 0){
@@ -104,10 +117,10 @@ function updateDay(weatherIndex){
             newTime.setHours(newTime.getHours() + offset);
         } else {
             newTime = new Date(Date(weatherArray[0]));
-            newTime.setHours(newTime.getUTCHours() + offset);
+            newTime.setHours(newTime.getUTCHours() + offset -24);
         }
         if (newTime.getDay() != day && weatherIndex != 0) break;
-        if (weatherIndex == 0 && startIndex == 8) break;
+        if (weatherIndex == 0 && startIndex == 9) break;
 
         updateDayPeriod(weatherArray[startIndex], newTime)
 
@@ -142,7 +155,7 @@ function updateDayPeriod(weather, newTime){
 function updateForecast() {
     let offset = weatherArray[0].timezone/3600;
     let newDate = new Date(Date(weatherArray[0].dt));
-    newDate.setHours(newDate.getUTCHours() + offset);
+    newDate.setHours(newDate.getUTCHours() + offset -24);
     let oldDay = newDate.getDay();
     
     updateForecastDay(forecastDiv.children[0], newDate, weatherArray[0], 0);
@@ -159,7 +172,7 @@ function updateForecast() {
             if (weatherArray[j].main.temp < coldest) coldest = weatherArray[j].main.temp;
         }
         updateForecastDay(forecastDiv.children[i], newDate, weatherArray[k], k, coldest);
-        oldDay = newDate.getDay();
+        oldDay = (oldDay +1 )%7;
     }
 
     for (let elem of forecastDiv.children){
@@ -191,7 +204,13 @@ function updateForecastDay(dayDiv, timeStamp, weather, index, coldest){
 }
 
 function updateDetails(weather, time){
-    console.log("test");
-    timeText.textContent =  weekdays[time.getDay()] + " " + time.getHours() + ":00";
+    let timeHours = time.getHours() >= 10 ? time.getHours() : "0" + time.getHours();
+    timeText.textContent =  weekdays[time.getDay()] + " " + timeHours + ":00";
+    humidityText.textContent = " " + weather.main.humidity + "%";
+    pressureText.textContent = " " + weather.main.pressure;
+    windText.textContent = " " + weather.wind.speed + " m/s";
+    feelText.textContent = " " + Math.round((weather.main.feels_like -273)*10)/10 +" °C";
+    bigIcon.src = iconMap["i" + weather.weather[0].icon];
+    iconDescription.textContent = weather.weather[0].description;
 
 }

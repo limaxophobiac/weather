@@ -2,13 +2,14 @@
     margin: 0px;
     box-sizing: border-box;
     padding: 0px;
+    font-size: 1.1rem;
 }
 
 body{
     height: 100vh;
     display: grid;
     padding: 5px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(250px, 350px) 1fr;
     grid-template-rows: 50px 2fr 200px;
     background-color: rgb(42, 166, 207);
 }
@@ -31,31 +32,37 @@ body{
 }
 
 #searchDiv input{
-    height: 25px;
-    padding: 10px 10px;
+    margin-left: 5px;
+    height: 30px;
+    padding: 10px 12px;
+    padding-right: 32px;
     border: none;
+    outline: none;
     border-radius: 100px;
-    width: 50vw;
+    width: calc(min(500px, 40vw));
+    font-size: 1.2rem;
+    background-color: rgba(255, 255, 255, 0.6);
 }
 
 #searchDiv button{
     background: transparent;
     border: none;
     outline: none;
-    margin-left: -26px;
-    margin-right: 26px;
-    margin-bottom: -3px;
+    margin-left: -32px;
+    margin-right: 32px;
+    margin-bottom: -4px;
     cursor: pointer;
 }
 
 #searchDiv button img{
-    height: 20px;
+    height: 24px;
     object-fit: cover;
 }
 
 #locationText, #timeText{
     line-height: 30px;
     height: 30px;
+    font-size: 1.25rem;
 }
 
 #timeText{
@@ -64,15 +71,41 @@ body{
 
 #detailsDiv{
     grid-row: 2 / 3;
+    width: 100%;
     grid-column: 2 / 3;
     justify-self: end;
+    font-size: 1.2rem;
+    padding-right: min(3vw, 20px);
+    grid-template-columns: 1fr 175px;
 }
+
+#detailsDiv #details{
+    justify-self: start;
+    align-self: start;
+}
+
+#detailsDiv #focus{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: start;
+}
+
+#detailsDiv #bigIcon{
+    width: min(200px, 15vw);
+}
+
+#detailsDiv #iconDescription{
+    width: min(200px, 15vw);
+    text-align: center;
+}
+
 
 #dayDisplay{
     min-height: 200px;
     overflow-y: scroll;
     max-width: 350px;
-    max-height: calc(100vh - 260px);
+    max-height: calc(100vh - 300px);
 }
 
 #dayDisplay > div{
@@ -81,8 +114,8 @@ body{
 }
 
 #dayDisplay > div:hover{
-    zoom: 1.1;
-    margin-top: -10px;
+    zoom: 1.2;
+    margin-top: -20px;
 }
 
 
@@ -95,7 +128,7 @@ body{
 }
 
 #dayDisplay::-webkit-scrollbar-track{
-    background: lightblue;
+    background: rgb(42, 166, 207);
 }
 
 #dayDisplay::-webkit-scrollbar-thumb{
@@ -113,21 +146,27 @@ body{
     display: flex;
     justify-content: space-around;
     align-self: end;
-    height: 200px;
+    height: 240px;
     overflow: hidden;
 }
 
-#forecastDiv div{
+#forecastDiv > div{
     text-align: center;
     align-self: center;
     cursor: pointer;
+    width: 160px;
+    height: 160px;
 }
 
 #forecastDiv div img {
     height: 100px;
 }
 
-
+#forecastDiv > div:hover{
+    zoom: 1.2;
+    margin-left: -10px;
+    margin-right: -10px;
+}
 
 .hourlyDisplay{
     display: grid;
