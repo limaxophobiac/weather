@@ -22,5 +22,8 @@ module.exports = {
       },
     ],
   },
+  output: {
+    publicPath: '',
+  },
   mode: 'development',
 };
