@@ -85,7 +85,7 @@ function updateDay(weatherIndex){
     let day;
     if (weatherIndex == 0) day = new Date(Date(weatherArray[0].dt));
     else day = new Date(weatherArray[weatherIndex].dt_txt);
-
+    console.log(day);
     
     let newTime;
     if (weatherIndex != 0){
@@ -94,21 +94,24 @@ function updateDay(weatherIndex){
         day.setHours(day.getHours() + offset);
     } else {
         newTime = new Date(Date(weatherArray[0]));
-        newTime.setHours(newTime.getUTCHours() + offset -24);
+        newTime.setHours(newTime.getUTCHours() + offset);
         day.setHours(day.getUTCHours() + offset);
     }
+    console.log(day);
     day = day.getDay();
     updateDetails(weatherArray[weatherIndex], newTime);
 
     let startIndex, newDay;
-    for (startIndex = weatherIndex; startIndex > 1; startIndex--){
+    for (startIndex = weatherIndex; startIndex > 0; startIndex--){
         newDay = new Date(weatherArray[startIndex].dt_txt);
         newDay.setHours(newDay.getHours() + offset);
+        console.log(newDay);
         if (day != newDay.getDay()){
             startIndex++;
             break;
         }
     }
+    if (startIndex == 0 && weatherIndex != 0) startIndex = 1;
 
     for (startIndex; startIndex <= 40; startIndex++){
         
@@ -117,7 +120,7 @@ function updateDay(weatherIndex){
             newTime.setHours(newTime.getHours() + offset);
         } else {
             newTime = new Date(Date(weatherArray[0]));
-            newTime.setHours(newTime.getUTCHours() + offset -24);
+            newTime.setHours(newTime.getUTCHours() + offset);
         }
         if (newTime.getDay() != day && weatherIndex != 0) break;
         if (weatherIndex == 0 && startIndex == 9) break;
@@ -155,12 +158,13 @@ function updateDayPeriod(weather, newTime){
 function updateForecast() {
     let offset = weatherArray[0].timezone/3600;
     let newDate = new Date(Date(weatherArray[0].dt));
-    newDate.setHours(newDate.getUTCHours() + offset -24);
+    newDate.setHours(newDate.getUTCHours() + offset);
     let oldDay = newDate.getDay();
     
     updateForecastDay(forecastDiv.children[0], newDate, weatherArray[0], 0);
     
     for (let i = 1, k = 0; i < 5; i++){     
+        console.log(oldDay);
         while ((newDate.getDay() == oldDay || newDate.getHours() < 12) && k < 40){
             newDate = new Date(weatherArray[++k].dt_txt);
             newDate.setHours(newDate.getHours() + offset);
